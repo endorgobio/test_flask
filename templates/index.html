@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Dashboard</title>
+    <title>Flask Plotly 3D Graph</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Include Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <h1>Interactive Dashboard with Plotly</h1>
-    <p>Select a dataset from the dropdown to update the graph.</p>
+    <h1>Flask Plotly 3D Graph</h1>
+    <p>Select a dataset from the dropdown to update the 3D scatter plot.</p>
 
     <!-- Dropdown menu -->
+    <label for="dataset-select">Select Dataset:</label>
     <select id="dataset-select">
         <option value="dataset1">Dataset 1</option>
         <option value="dataset2">Dataset 2</option>
@@ -22,40 +23,7 @@
     <!-- Placeholder for the Plotly graph -->
     <div id="plotly-graph"></div>
 
-    <script>
-        // Initialize the graph with the first dataset
-        let graphDiv = document.getElementById('plotly-graph');
-        let initialData = {
-            x: [1, 2, 3, 4, 5],
-            y: [10, 15, 13, 17, 21]
-        };
-
-        Plotly.newPlot(graphDiv, [{
-            x: initialData.x,
-            y: initialData.y,
-            type: 'scatter',
-            mode: 'lines+markers'
-        }], {
-            title: 'Interactive Plotly Graph',
-            xaxis: { title: 'X-Axis' },
-            yaxis: { title: 'Y-Axis' }
-        });
-
-        // Add event listener to the dropdown menu
-        document.getElementById('dataset-select').addEventListener('change', function() {
-            let selectedDataset = this.value;
-
-            // Fetch the selected dataset from the Flask backend
-            fetch(`/get_data/${selectedDataset}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Update the Plotly graph with the new data
-                    Plotly.update(graphDiv, {
-                        x: [data.x],
-                        y: [data.y]
-                    });
-                });
-        });
-    </script>
+    <!-- Include JavaScript for interactivity -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
