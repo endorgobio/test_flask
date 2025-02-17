@@ -5,6 +5,8 @@ import pandas as pd
 import os
 ###
 import json
+from pyomo.environ import *
+from pyomo.opt import SolverFactory
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -60,11 +62,45 @@ def run_model():
         data = request.get_json()
         file_data = data.get("file_data")  # Extract file content
 
-        # Simulate processing the data (you can replace this with actual model logic)
-        parsed_data = json.loads(file_data)  # Parse JSON file if needed
-        result_value = parsed_data.get("labels", []) # Example: Sum of values
         
-        result = {"output": f"Model Result: {result_value}"}
+        parsed_data = json.loads(file_data)  # Parse JSON file if needed
+        values = parsed_data["values"]
+        weights = parsed_data["weights"]
+        capacity = parsed_data["capacity"]
+        num_items = len(values)
+
+        # Create Pyomo model
+        model = ConcreteModel()
+
+        # Define sets
+        model.Items = Set(initialize = list(range(num_items)))
+        print(model.Items)
+
+        # Decision variables (Binary: 0 or 1)
+        model.x = Var(model.Items, within=Binary)
+
+        # Objective function: Maximize value
+        model.obj = Objective(expr=sum(values[i] * model.x[i] for i in model.Items), sense=maximize)
+
+        # Constraint: Total weight should not exceed capacity
+        model.weight_constraint = Constraint(expr=sum(weights[i] * model.x[i] for i in model.Items) <= capacity)
+
+        # # Solve using HiGHS solver
+        # solver = SolverFactory("highs")
+        # result = solver.solve(model)
+
+        # # Extract results
+        # selected_items = [i for i in model.items if model.x[i].value == 1]
+
+        # # Return solution
+        # return {
+        #     "status": str(result.solver.status),
+        #     "selected_items": selected_items,
+        #     "total_value": sum(values[i] for i in selected_items),
+        #     "total_weight": sum(weights[i] for i in selected_items)
+        # }
+        
+        result = {"output": f"Model Result: {model.Items.pprint()}"}
         return jsonify(result)
     
     except Exception as e:
