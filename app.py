@@ -3,6 +3,8 @@ import plotly.graph_objs as go
 import plotly.io as pio
 import pandas as pd
 import os
+###
+import json
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -51,6 +53,23 @@ def upload_file():
         df = pd.read_json(filepath)
         graph_json = create_plot(df)
         return jsonify(graph_json)
+    
+@app.route('/run_model', methods=['POST'])
+def run_model():
+    try:
+        data = request.get_json()
+        file_data = data.get("file_data")  # Extract file content
+
+        # Simulate processing the data (you can replace this with actual model logic)
+        parsed_data = json.loads(file_data)  # Parse JSON file if needed
+        result_value = parsed_data.get("labels", []) # Example: Sum of values
+        
+        result = {"output": f"Model Result: {result_value}"}
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)

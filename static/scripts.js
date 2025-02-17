@@ -12,6 +12,7 @@ function updateGraph() {
     });
 }
 
+// TODO: Solve the response data 
 // function updateGraph() {
 //     let dataset = document.getElementById("dataset-select").value;
 
@@ -73,9 +74,91 @@ function uploadFile() {
     });
 }
 
-$(document).ready(function() {
-    updateGraph();
-});
+// TODO: Solve the response data 
+// async function uploadFile() {
+//     let fileInput = document.getElementById('file-input');
+//     if (fileInput.files.length === 0) {
+//         alert("Please select a file first!");
+//         return;
+//     }
+
+//     let formData = new FormData();
+//     formData.append("file", fileInput.files[0]);
+
+//     try {
+//         let response = await fetch("/upload", {
+//             method: "POST",
+//             body: formData
+//         });
+
+//         if (!response.ok) {
+//             throw new Error("Error uploading file. Please try again.");
+//         }
+
+//         // let graph_json = await response.json();
+//         let graph_json = await  JSON.parse(response)
+
+//         Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+//     } catch (error) {
+//         alert(error.message);
+//     }
+// }
+
+
+// async function runModelAndDisplay() {
+//     try {
+//         let response = await fetch('/run_model', {  // Flask route
+//             method: 'GET',
+//             headers: { 'Content-Type': 'application/json' }
+//         });
+
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+
+//         let result = await response.json();  // Expecting JSON response
+//         document.getElementById("model-output").value = result.output; // Access the 'output' key
+//     } catch (error) {
+//         console.error("Error running model:", error);
+//         alert("Error running model. Please try again.");
+//     }
+// }
+
+async function runModelWithFile() {
+    let fileInput = document.getElementById('file-data');
+    
+    if (fileInput.files.length === 0) {
+        alert("Please select a file first!");
+        return;
+    }
+
+    let file = fileInput.files[0];
+    let reader = new FileReader();
+
+    reader.onload = async function(event) {
+        let fileContent = event.target.result;  // Read file content
+
+        try {
+            let response = await fetch('/run_model', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ file_data: fileContent })  // Send file data
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            let result = await response.json();
+            document.getElementById("model-output").value = result.output;
+        } catch (error) {
+            console.error("Error running model:", error);
+            alert("Error running model. Please try again.");
+        }
+    };
+
+    reader.readAsText(file);  // Read file as text (works for JSON and CSV)
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     const datasetSelect = document.getElementById('dataset-select');
@@ -84,47 +167,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load the initial graph
     updateGraph();
 });
-
-
-// // Initialize the Plotly graph
-// let graphDiv = document.getElementById('plotly-graph');
-
-// // Function to update the graph
-// function updateGraph(datasetId) {
-//     // Fetch data from the Flask backend
-//     fetch(`/get_data/${datasetId}`)
-//         .then(response => response.json())
-//         .then(data => {
-//             // Create the 3D scatter plot
-//             let trace = {
-//                 x: data.x,
-//                 y: data.y,
-//                 z: data.z,
-//                 mode: 'markers',
-//                 marker: {
-//                     size: 10,
-//                     color: 'blue'
-//                 },
-//                 type: 'scatter3d'
-//             };
-
-//             // Update the graph
-//             Plotly.newPlot(graphDiv, [trace], {
-//                 margin: { l: 0, r: 0, b: 0, t: 0 },
-//                 scene: {
-//                     xaxis: { title: "X-Axis" },
-//                     yaxis: { title: "Y-Axis" },
-//                     zaxis: { title: "Z-Axis" }
-//                 }
-//             });
-//         });
-// }
-
-// // Event listener for the dropdown menu
-// document.getElementById('dataset-select').addEventListener('change', function() {
-//     let datasetId = this.value;
-//     updateGraph(datasetId);
-// });
-
-// // Initialize the graph with the first dataset
-// updateGraph("dataset1");
