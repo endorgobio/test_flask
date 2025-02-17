@@ -84,22 +84,22 @@ def run_model():
         # Constraint: Total weight should not exceed capacity
         model.weight_constraint = Constraint(expr=sum(weights[i] * model.x[i] for i in model.Items) <= capacity)
 
-        # # Solve using HiGHS solver
-        # solver = SolverFactory("highs")
-        # result = solver.solve(model)
+        # Solve using HiGHS solver
+        solver = SolverFactory("appsi_highs")
+        result = solver.solve(model)
 
-        # # Extract results
-        # selected_items = [i for i in model.items if model.x[i].value == 1]
+        # Extract results
+        selected_items = [i for i in model.Items if model.x[i].value == 1]
 
-        # # Return solution
-        # return {
-        #     "status": str(result.solver.status),
-        #     "selected_items": selected_items,
-        #     "total_value": sum(values[i] for i in selected_items),
-        #     "total_weight": sum(weights[i] for i in selected_items)
-        # }
+        # Return solution
+        output = {
+            "status": str(result.solver.status),
+            "selected_items": selected_items,
+            "total_value": sum(values[i] for i in selected_items),
+            "total_weight": sum(weights[i] for i in selected_items)
+        }
         
-        result = {"output": f"Model Result: {model.Items.pprint()}"}
+        result = {"output": f"Model Result: {output}"}
         return jsonify(result)
     
     except Exception as e:
