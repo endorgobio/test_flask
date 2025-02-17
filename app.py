@@ -19,14 +19,14 @@ def create_plot(df):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df.iloc[:, 0], y=df.iloc[:, 1], mode='lines+markers', name='User Data'))
     fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
-    return pio.to_json(fig)
+    return fig.to_json(fig)
 
 def create_plot_from_dataset(dataset_name):
     df = pd.DataFrame(data[dataset_name])
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df['x'], y=df['y'], mode='lines+markers', name=dataset_name))
     fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
-    return pio.to_json(fig)
+    return fig.to_json(fig)
 
 @app.route('/')
 def index():

@@ -12,6 +12,41 @@ function updateGraph() {
     });
 }
 
+// function updateGraph() {
+//     let dataset = document.getElementById("dataset-select").value;
+
+//     fetch("/update_graph", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json"
+//         },
+//         body: JSON.stringify({ dataset: dataset })
+//     })
+//     .then(response => response.json()) // Parse the JSON response
+//     .then(graph_json => {
+        
+//         console.log("Graph JSON Response:", graph_json);
+//         // Check if the response contains valid data
+//         if (graph_json && graph_json.data && Array.isArray(graph_json.data) && graph_json.data.length > 0) {
+//             console.log("Graph Data:", graph_json.data);
+//             console.log("Graph Layout:", graph_json.layout);
+
+//             // Ensure the container is cleared before creating the plot
+//             const graphContainer = document.getElementById('graph');
+//             graphContainer.innerHTML = ''; // Clear the container before plotting
+
+//             // Create the plot with the correct data and layout
+//             Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+//         } else {
+//             console.error("Invalid graph data or layout:", graph_json);
+//         }
+//     })
+//     .catch(error => {
+//         console.error("Error updating graph:", error);
+//     });
+// }
+
+
 function uploadFile() {
     let fileInput = document.getElementById('file-input');
     if (fileInput.files.length === 0) {
@@ -39,6 +74,14 @@ function uploadFile() {
 }
 
 $(document).ready(function() {
+    updateGraph();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const datasetSelect = document.getElementById('dataset-select');
+    datasetSelect.addEventListener('change', updateGraph);
+
+    // Load the initial graph
     updateGraph();
 });
 
