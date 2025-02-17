@@ -1,2 +1,0 @@
-libglpk40
-glpk-utils
