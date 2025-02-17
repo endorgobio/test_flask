@@ -3,27 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Plotly 3D Graph</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Include Plotly.js -->
+    <title>Interactive Plotly Graph</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Flask Plotly 3D Graph</h1>
-    <p>Select a dataset from the dropdown to update the 3D scatter plot.</p>
+    <h1>Choose a Dataset or Upload Your Own</h1>
 
-    <!-- Dropdown menu -->
-    <label for="dataset-select">Select Dataset:</label>
-    <select id="dataset-select">
-        <option value="dataset1">Dataset 1</option>
-        <option value="dataset2">Dataset 2</option>
-        <option value="dataset3">Dataset 3</option>
+    <label for="dataset-select">Select a dataset:</label>
+    <select id="dataset-select" onchange="updateGraph()">
+        {% for dataset in datasets %}
+        <option value="{{ dataset }}">{{ dataset }}</option>
+        {% endfor %}
     </select>
+    <!-- <button onclick="updateGraph()">Load Dataset</button> -->
 
-    <!-- Placeholder for the Plotly graph -->
-    <div id="plotly-graph"></div>
+    <h2>Or Upload Your Own JSON File</h2>
+    <input type="file" id="file-input" />
+    <button onclick="uploadFile()">Upload</button>
 
-    <!-- Include JavaScript for interactivity -->
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <div id="graph"></div>
+
+    <script>
+        function updateGraph() {
+            let dataset = $("#dataset-select").val();
+            $.ajax({
+                url: "/update_graph",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ dataset: dataset }),
+                success: function(response) {
+                    let graph_json = JSON.parse(response);
+                    Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+                }
+            });
+        }
+
+        function uploadFile() {
+            let fileInput = document.getElementById('file-input');
+            if (fileInput.files.length === 0) {
+                alert("Please select a file first!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            $.ajax({
+                url: "/upload",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    let graph_json = JSON.parse(response);
+                    Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+                },
+                error: function() {
+                    alert("Error uploading file. Please try again.");
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            updateGraph();
+        });
+    </script>
 </body>
 </html>
