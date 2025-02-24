@@ -6,7 +6,7 @@ import os
 import json
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
-from utilities import read_data, create_instance
+from utilities import read_data, create_instance, create_map
 from opt_gurobipy import create_model #, get_vars_sol, create_df_coord, get_obj_components, create_df_OF
 import gurobipy as gp
 from gurobipy import GRB
@@ -28,10 +28,10 @@ url_coord = 'https://docs.google.com/uc?export=download&id=1VYEnH735Tdgqe9cS4ccY
 url_dist = 'https://docs.google.com/uc?export=download&id=1Apbc_r3CWyWSVmxqWqbpaYEacbyf1wvV'
 url_demand = 'https://docs.google.com/uc?export=download&id=1w0PMK36H4Aq39SAaJ8eXRU2vzHMjlWGe'
 parameters = read_data(json_path, url_coord, url_dist, url_demand)
-instance = create_instance(parameters)        
-model = create_model(instance)
-model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
-model.optimize()
+# instance = create_instance(parameters)        
+# model = create_model(instance)
+# model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
+# model.optimize()
 # get solution
 # var_sol = get_vars_sol(model)
 # df_sol = create_df_coord(var_sol, df_coord)
@@ -39,18 +39,18 @@ model.optimize()
 # df_obj = create_df_OF(results_obj)
 
 
-def create_plot(df):
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df.iloc[:, 0], y=df.iloc[:, 1], mode='lines+markers', name='User Data'))
-    fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
-    return fig.to_json(fig)
+# def create_plot(df):
+#     fig = go.Figure()
+#     fig.add_trace(go.Scatter(x=df.iloc[:, 0], y=df.iloc[:, 1], mode='lines+markers', name='User Data'))
+#     fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
+#     return fig.to_json(fig)
 
-def create_plot_from_dataset(dataset_name):
-    df = pd.DataFrame(data[dataset_name])
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df['x'], y=df['y'], mode='lines+markers', name=dataset_name))
-    fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
-    return fig.to_json(fig)
+# def create_plot_from_dataset(dataset_name):
+#     df = pd.DataFrame(data[dataset_name])
+#     fig = go.Figure()
+#     fig.add_trace(go.Scatter(x=df['x'], y=df['y'], mode='lines+markers', name=dataset_name))
+#     fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
+#     return fig.to_json(fig)
 
 @app.route('/')
 def index():
@@ -59,7 +59,8 @@ def index():
 @app.route('/update_graph', methods=['POST'])
 def update_graph():
     dataset_name = request.json.get('dataset')
-    graph_json = create_plot_from_dataset(dataset_name)
+    fig = create_map(parameters['df_coord'])
+    graph_json = fig.to_json(fig)
     return jsonify(graph_json)
 
 @app.route('/upload', methods=['POST'])
@@ -73,7 +74,8 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
         df = pd.read_json(filepath)
-        graph_json = create_plot(df)
+        fig = create_map(parameters['df_coord'])
+        graph_json = fig.to_json(fig)
         return jsonify(graph_json)
     
 @app.route('/run_model', methods=['POST'])
