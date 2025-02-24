@@ -160,13 +160,55 @@ async function runModelWithFile() {
     reader.readAsText(file);  // Read file as text (works for JSON and CSV)
 }
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     const datasetSelect = document.getElementById('dataset-select');
-//     datasetSelect.addEventListener('change', updateGraph);
 
-//     // Load the initial graph
-//     updateGraph();
-// });
+async function runSampleModel() {
+    // Show loading indicator (optional)
+    const button = document.querySelector('.btn-success');
+    const originalText = button.innerText;
+    button.innerText = 'Running...';
+    button.disabled = true;
+
+    try {
+        // Gather input values
+        const parameters = {
+            container_value: parseFloat(document.getElementById('container_value').value),
+            deposit: parseFloat(document.getElementById('deposit').value),
+            clasification: parseFloat(document.getElementById('clasification').value),
+            washing: parseFloat(document.getElementById('washing').value),
+            transportation: parseFloat(document.getElementById('transportation').value)
+        };
+
+        // Send POST request to Flask backend
+        const response = await fetch('/run_sample_model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parameters)
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const data = await response.json();
+
+        // Display result
+        alert("Result: " + data.result);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while running the model.');
+    } finally {
+        // Reset button state
+        button.innerText = originalText;
+        button.disabled = false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const datasetSelect = document.getElementById('dataset-select');
+    datasetSelect.addEventListener('change', updateGraph);
+
+    // Load the initial graph
+    updateGraph();
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const datasetSelect = document.getElementById('dataset-select');
@@ -175,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateGraph(selectedDataset);
     });
 
-    // Load the initial graph with the default selected value
-    const initialDataset = datasetSelect.value;
+    // Load the initial graph with the given initial dataset value
     updateGraph(initialDataset);
 });

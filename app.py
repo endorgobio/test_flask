@@ -128,6 +128,26 @@ def run_model():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+def sample_model(parameters):
+    # Example: Sum all values
+    result = sum(parameters.values())
+    return result
+
+
+@app.route('/run_sample_model', methods=['POST'])
+def run_sample_model():
+    inputs = request.get_json()
+    parameters['enr'] = inputs['container_value']
+    parameters['dep'] = inputs['deposit']
+    parameters['qc'] = inputs['clasification']
+    parameters['ql'] = inputs['washing']
+    parameters['qa'] = inputs['transportation']
+    instance = create_instance(parameters)        
+    model = create_model(instance)
+    model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
+    model.optimize()
+    result = model.ObjVal #sample_model(inputs)
+    return jsonify({'result': result})
 
 if __name__ == '__main__':
     app.run(debug=True)
