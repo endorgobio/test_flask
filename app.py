@@ -6,7 +6,11 @@ import os
 import json
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
-from utilities import read_data
+from utilities import read_data, create_instance
+from opt_gurobipy import create_model #, get_vars_sol, create_df_coord, get_obj_components, create_df_OF
+import gurobipy as gp
+from gurobipy import GRB
+
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -24,7 +28,16 @@ url_coord = 'https://docs.google.com/uc?export=download&id=1VYEnH735Tdgqe9cS4ccY
 url_dist = 'https://docs.google.com/uc?export=download&id=1Apbc_r3CWyWSVmxqWqbpaYEacbyf1wvV'
 url_demand = 'https://docs.google.com/uc?export=download&id=1w0PMK36H4Aq39SAaJ8eXRU2vzHMjlWGe'
 parameters = read_data(json_path, url_coord, url_dist, url_demand)
-print(parameters)
+instance = create_instance(parameters)        
+model = create_model(instance)
+model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
+model.optimize()
+# get solution
+# var_sol = get_vars_sol(model)
+# df_sol = create_df_coord(var_sol, df_coord)
+# results_obj = get_obj_components(model)
+# df_obj = create_df_OF(results_obj)
+
 
 def create_plot(df):
     fig = go.Figure()

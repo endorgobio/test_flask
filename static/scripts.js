@@ -160,10 +160,22 @@ async function runModelWithFile() {
     reader.readAsText(file);  // Read file as text (works for JSON and CSV)
 }
 
+// document.addEventListener('DOMContentLoaded', function() {
+//     const datasetSelect = document.getElementById('dataset-select');
+//     datasetSelect.addEventListener('change', updateGraph);
+
+//     // Load the initial graph
+//     updateGraph();
+// });
+
 document.addEventListener('DOMContentLoaded', function() {
     const datasetSelect = document.getElementById('dataset-select');
-    datasetSelect.addEventListener('change', updateGraph);
+    datasetSelect.addEventListener('change', function() {
+        const selectedDataset = datasetSelect.value;
+        updateGraph(selectedDataset);
+    });
 
-    // Load the initial graph
-    updateGraph();
+    // Load the initial graph with the default selected value
+    const initialDataset = datasetSelect.value;
+    updateGraph(initialDataset);
 });

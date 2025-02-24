@@ -4,7 +4,7 @@
     "n_plantas": 3,
     "n_productores": 5,
     "n_envases": 3,
-    "n_periodos": 120,
+    "n_periodos": 10,
     
     "ccv": 337610,
     "acv": 418117,
