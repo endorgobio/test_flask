@@ -6,6 +6,7 @@ import os
 import json
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
+from utilities import read_data
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -17,6 +18,13 @@ data = {
     'Dataset 2': {'x': [1, 2, 3, 4, 5], 'y': [5, 10, 15, 10, 5]},
     'Dataset 3': {'x': [1, 2, 3, 4, 5], 'y': [3, 6, 9, 12, 15]}
 }
+
+json_path = "data/data.json"
+url_coord = 'https://docs.google.com/uc?export=download&id=1VYEnH735Tdgqe9cS4ccYV0OUxMqQpsQh'
+url_dist = 'https://docs.google.com/uc?export=download&id=1Apbc_r3CWyWSVmxqWqbpaYEacbyf1wvV'
+url_demand = 'https://docs.google.com/uc?export=download&id=1w0PMK36H4Aq39SAaJ8eXRU2vzHMjlWGe'
+parameters = read_data(json_path, url_coord, url_dist, url_demand)
+print(parameters)
 
 def create_plot(df):
     fig = go.Figure()
