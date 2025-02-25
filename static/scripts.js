@@ -1,5 +1,4 @@
-function updateGraph() {
-    let dataset = $("#dataset-select").val();
+function updateGraph(dataset) {
     $.ajax({
         url: "/update_graph",
         type: "POST",
@@ -201,22 +200,28 @@ async function runSampleModel() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const datasetSelect = document.getElementById('dataset-select');
-    datasetSelect.addEventListener('change', updateGraph);
+// document.addEventListener('DOMContentLoaded', function() {
+//     const datasetSelect = document.getElementById('dataset-select');
+//     datasetSelect.addEventListener('change', updateGraph);
 
-    // Load the initial graph
-    updateGraph();
+//     // Load the initial graph
+//     updateGraph();
+// });
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     const datasetSelect = document.getElementById('dataset-select');
+//     datasetSelect.addEventListener('change', function() {
+//         const selectedDataset = datasetSelect.value;
+//         updateGraph(selectedDataset);
+//     });
+
+//     // Load the initial graph with the given initial dataset value
+//     updateGraph(initialDataset);
+// });
+document.addEventListener('DOMContentLoaded', function () {
+    // Render the Plotly graph
+    Plotly.newPlot('graph', graph_json.data, graph_json.layout);
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const datasetSelect = document.getElementById('dataset-select');
-    datasetSelect.addEventListener('change', function() {
-        const selectedDataset = datasetSelect.value;
-        updateGraph(selectedDataset);
-    });
-
-    // Load the initial graph with the given initial dataset value
-    updateGraph(initialDataset);
-});

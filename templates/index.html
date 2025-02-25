@@ -52,22 +52,6 @@
                     </div>
                     <button class="btn btn-success mt-2" onclick="runSampleModel()">Run Model</button>
 
-
-                    <!-- parameters['enr'] = container_value
-                    parameters['dep'] = deposit
-                    parameters['qc'] = cost_class
-                    parameters['ql'] = cost_wash
-                    parameters['qa'] = cost_transp -->
-
-
-                    <!-- <label for="dataset-select">Select a dataset:</label>
-                    <input id="dataset-select", type="number" class="form-control" placeholder="Enter a number"> -->
-                    <!-- <select id="dataset-select" class="form-select" onchange="updateGraph()">
-                        {% for dataset in datasets %}
-                        <option value="{{ dataset }}">{{ dataset }}</option>
-                        {% endfor %}
-                    </select> -->
-
                     <h3 class="mt-3"> Upload Your Own JSON File</h3>
                     <input type="file" id="file-input" class="form-control" />
                     <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
@@ -87,55 +71,12 @@
             </div>
         </div>
     </div>
-    <script const initialDataset = "{{ initial_dataset }}" ></script>/script>
+    <!-- Pass the graph JSON data to the JavaScript file -->
+    <script>
+        // Pass the JSON graph data to the external script
+        var graph_json = {{ graph_json | safe }};
+    </script>
     <script src="/static/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Plotly Graph</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <img src="{{ url_for('static', filename='images/header.png') }}" class="img-fluid w-100" alt="Header Image">
-    </header>
-    <div class="container mt-4">
-        <div class="row">
-            // Controls Column 
-            <div class="col-md-4">
-                <h2>Choose a Dataset or Upload Your Own</h2>
-                <label for="dataset-select">Select a dataset:</label>
-                <select id="dataset-select" class="form-select" onchange="updateGraph()">
-                    {% for dataset in datasets %}
-                    <option value="{{ dataset }}">{{ dataset }}</option>
-                    {% endfor %}
-                </select>
-                
-                <h3 class="mt-3">Or Upload Your Own JSON File</h3>
-                <input type="file" id="file-input" class="form-control" />
-                <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
-                
-                <h3 class="mt-3">Run Model</h3>
-                <input type="file" id="file-data" class="form-control" />
-                <button class="btn btn-success mt-2" onclick="runModelWithFile()">Run Model</button>
-                <input type="text" id="model-output" class="form-control mt-2" readonly />
-            </div>
-            // Graph Column
-            <div class="col-md-8">
-                <div id="graph"></div>
-            </div>
-        </div>
-    </div>
-    
-    <script src="/static/scripts.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html> -->

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+import plotly
 import plotly.graph_objs as go
 import plotly.io as pio
 import pandas as pd
@@ -52,9 +53,7 @@ parameters = read_data(json_path, url_coord, url_dist, url_demand)
 #     fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
 #     return fig.to_json(fig)
 
-@app.route('/')
-def index():
-    return render_template('index.html', datasets=list(data.keys()))
+
 
 @app.route('/update_graph', methods=['POST'])
 def update_graph():
@@ -128,10 +127,6 @@ def run_model():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-def sample_model(parameters):
-    # Example: Sum all values
-    result = sum(parameters.values())
-    return result
 
 
 @app.route('/run_sample_model', methods=['POST'])
@@ -148,6 +143,12 @@ def run_sample_model():
     model.optimize()
     result = model.ObjVal #sample_model(inputs)
     return jsonify({'result': result})
+
+@app.route('/')
+def index():
+    fig = create_map(parameters['df_coord'])
+    graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return render_template('index.html', graph_json=graph_json)
 
 if __name__ == '__main__':
     app.run(debug=True)
