@@ -1,3 +1,49 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Render the Plotly graph
+    Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+});
+
+async function runSampleModel() {
+    // Show loading indicator (optional)
+    const button = document.querySelector('.btn-success');
+    const originalText = button.innerText;
+    button.innerText = 'Running...';
+    button.disabled = true;
+
+    try {
+        // Gather input values
+        const parameters = {
+            container_value: parseFloat(document.getElementById('container_value').value),
+            deposit: parseFloat(document.getElementById('deposit').value),
+            clasification: parseFloat(document.getElementById('clasification').value),
+            washing: parseFloat(document.getElementById('washing').value),
+            transportation: parseFloat(document.getElementById('transportation').value)
+        };
+
+        // Send POST request to Flask backend
+        const response = await fetch('/run_sample_model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parameters)
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const data = await response.json();
+
+        // Display result
+        alert("Result: " + data.result);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while running the model.');
+    } finally {
+        // Reset button state
+        button.innerText = originalText;
+        button.disabled = false;
+    }
+}
+
+
 function updateGraph(dataset) {
     $.ajax({
         url: "/update_graph",
@@ -160,45 +206,7 @@ async function runModelWithFile() {
 }
 
 
-async function runSampleModel() {
-    // Show loading indicator (optional)
-    const button = document.querySelector('.btn-success');
-    const originalText = button.innerText;
-    button.innerText = 'Running...';
-    button.disabled = true;
 
-    try {
-        // Gather input values
-        const parameters = {
-            container_value: parseFloat(document.getElementById('container_value').value),
-            deposit: parseFloat(document.getElementById('deposit').value),
-            clasification: parseFloat(document.getElementById('clasification').value),
-            washing: parseFloat(document.getElementById('washing').value),
-            transportation: parseFloat(document.getElementById('transportation').value)
-        };
-
-        // Send POST request to Flask backend
-        const response = await fetch('/run_sample_model', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(parameters)
-        });
-
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        const data = await response.json();
-
-        // Display result
-        alert("Result: " + data.result);
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while running the model.');
-    } finally {
-        // Reset button state
-        button.innerText = originalText;
-        button.disabled = false;
-    }
-}
 
 // document.addEventListener('DOMContentLoaded', function() {
 //     const datasetSelect = document.getElementById('dataset-select');
@@ -219,9 +227,6 @@ async function runSampleModel() {
 //     // Load the initial graph with the given initial dataset value
 //     updateGraph(initialDataset);
 // });
-document.addEventListener('DOMContentLoaded', function () {
-    // Render the Plotly graph
-    Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-});
+
 
 

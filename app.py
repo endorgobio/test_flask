@@ -137,7 +137,7 @@ def run_sample_model():
     parameters['qc'] = inputs['clasification']
     parameters['ql'] = inputs['washing']
     parameters['qa'] = inputs['transportation']
-    instance = create_instance(parameters)        
+    instance = create_instance(parameters, seed=7)        
     model = create_model(instance)
     model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
     model.optimize()
