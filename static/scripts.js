@@ -32,7 +32,8 @@ async function runSampleModel() {
         const data = await response.json();
 
         // Display result
-        alert("Result: " + data.result);
+        alert("Result: " + data.layout);
+        Plotly.newPlot('graph', data.data, data.layout);
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred while running the model.');
