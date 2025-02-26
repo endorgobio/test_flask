@@ -9,7 +9,7 @@ from gurobipy import GRB
 
 
 
-def get_vars_sol(model):
+def get_vars_sol_gb(model):
     """
     Extracts variable solutions from the optimization model and organizes them
     into dataframes based on variable groups.
@@ -143,7 +143,7 @@ def distancia_geo(punto1: tuple, punto2: tuple) -> float:
     
 
 
-def create_model(instance,
+def create_model_gb(instance,
                  model_integer = False # when True the model considers integer variables (False by default)
                  ):
 

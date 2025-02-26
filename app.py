@@ -8,7 +8,7 @@ import json
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from utilities import read_data, create_instance, create_map, create_df_coord
-from opt_gurobipy import create_model, get_vars_sol#, get_vars_sol, create_df_coord, get_obj_components, create_df_OF
+from opt_gurobipy import create_model_gb, get_vars_sol_gb#, get_vars_sol, create_df_coord, get_obj_components, create_df_OF
 import gurobipy as gp
 from gurobipy import GRB
 
@@ -81,10 +81,10 @@ def run_sample_model():
     parameters['ql'] = inputs['washing']
     parameters['qa'] = inputs['transportation']
     instance = create_instance(parameters, seed=7)        
-    model = create_model(instance)
+    model = create_model_gb(instance)
     model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
     model.optimize()
-    opt_solution['variables'] = get_vars_sol(model)
+    opt_solution['variables'] = get_vars_sol_gb(model)
 
     return jsonify({'result': True})
 
