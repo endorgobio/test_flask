@@ -43,32 +43,6 @@ controls_default = {
     'transportation_max': 10,
     'transportation_step': 0.1
 }
-# instance = create_instance(parameters)        
-# model = create_model(instance)
-# model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
-# model.optimize()
-# get solution
-# var_sol = get_vars_sol(model)
-# df_sol = create_df_coord(var_sol, df_coord)
-# results_obj = get_obj_components(model)
-# df_obj = create_df_OF(results_obj)
-
-
-# def create_plot(df):
-#     fig = go.Figure()
-#     fig.add_trace(go.Scatter(x=df.iloc[:, 0], y=df.iloc[:, 1], mode='lines+markers', name='User Data'))
-#     fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
-#     return fig.to_json(fig)
-
-# def create_plot_from_dataset(dataset_name):
-#     df = pd.DataFrame(data[dataset_name])
-#     fig = go.Figure()
-#     fig.add_trace(go.Scatter(x=df['x'], y=df['y'], mode='lines+markers', name=dataset_name))
-#     fig.update_layout(title='Plotly Line Graph', xaxis_title='X Axis', yaxis_title='Y Axis')
-#     return fig.to_json(fig)
-
-
-
 
 
 @app.route('/upload', methods=['POST'])

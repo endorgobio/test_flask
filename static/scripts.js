@@ -122,31 +122,31 @@ function uploadFile() {
 // }
 
 
-function uploadFile() {
-    let fileInput = document.getElementById('file-input');
-    if (fileInput.files.length === 0) {
-        alert("Please select a file first!");
-        return;
-    }
+// function uploadFile() {
+//     let fileInput = document.getElementById('file-input');
+//     if (fileInput.files.length === 0) {
+//         alert("Please select a file first!");
+//         return;
+//     }
 
-    let formData = new FormData();
-    formData.append("file", fileInput.files[0]);
+//     let formData = new FormData();
+//     formData.append("file", fileInput.files[0]);
 
-    $.ajax({
-        url: "/upload",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            let graph_json = JSON.parse(response);
-            Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-        },
-        error: function() {
-            alert("Error uploading file. Please try again.");
-        }
-    });
-}
+//     $.ajax({
+//         url: "/upload",
+//         type: "POST",
+//         data: formData,
+//         processData: false,
+//         contentType: false,
+//         success: function(response) {
+//             let graph_json = JSON.parse(response);
+//             Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+//         },
+//         error: function() {
+//             alert("Error uploading file. Please try again.");
+//         }
+//     });
+// }
 
 // TODO: Solve the response data 
 // async function uploadFile() {
@@ -198,41 +198,41 @@ function uploadFile() {
 //     }
 // }
 
-async function runModelWithFile() {
-    let fileInput = document.getElementById('file-data');
+// async function runModelWithFile() {
+//     let fileInput = document.getElementById('file-data');
     
-    if (fileInput.files.length === 0) {
-        alert("Please select a file first!");
-        return;
-    }
+//     if (fileInput.files.length === 0) {
+//         alert("Please select a file first!");
+//         return;
+//     }
 
-    let file = fileInput.files[0];
-    let reader = new FileReader();
+//     let file = fileInput.files[0];
+//     let reader = new FileReader();
 
-    reader.onload = async function(event) {
-        let fileContent = event.target.result;  // Read file content
+//     reader.onload = async function(event) {
+//         let fileContent = event.target.result;  // Read file content
 
-        try {
-            let response = await fetch('/run_model', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ file_data: fileContent })  // Send file data
-            });
+//         try {
+//             let response = await fetch('/run_model', {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify({ file_data: fileContent })  // Send file data
+//             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+//             if (!response.ok) {
+//                 throw new Error('Network response was not ok');
+//             }
 
-            let result = await response.json();
-            document.getElementById("model-output").value = result.output;
-        } catch (error) {
-            console.error("Error running model:", error);
-            alert("Error running model. Please try again.");
-        }
-    };
+//             let result = await response.json();
+//             document.getElementById("model-output").value = result.output;
+//         } catch (error) {
+//             console.error("Error running model:", error);
+//             alert("Error running model. Please try again.");
+//         }
+//     };
 
-    reader.readAsText(file);  // Read file as text (works for JSON and CSV)
-}
+//     reader.readAsText(file);  // Read file as text (works for JSON and CSV)
+// }
 
 
 
