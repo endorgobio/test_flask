@@ -46,50 +46,76 @@ async function runSampleModel() {
 }
 
 
-function updateGraph() {
-    $.ajax({
-        url: "/update_graph",
-        type: "POST",
-        contentType: "application/json",
-        // data: JSON.stringify({ dataset: dataset }),
-        success: function(response) {
-            let graph_json = JSON.parse(response);
-            Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+// function updateGraph() {
+//     $.ajax({
+//         url: "/update_graph",
+//         type: "POST",
+//         contentType: "application/json",
+//         success: function(response) {
+//             let graph_json = JSON.parse(response);
+//             Plotly.newPlot('graph', graph_json.data, graph_json.layout);
             
+//         }
+//     });
+// }
+
+async function updateGraph() {
+    try {
+        const response = await fetch('/update_graph', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    });
+
+        const graph_json = await response.json();
+        Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while updating the graph.');
+    }
 }
 
 async function uploadFile() {
     // Show loading indicator (optional)
-    const button = document.getElementById('btn_load'); //.querySelector('.btn-success');
+    const button = document.getElementById('btn_load');
     const originalText = button.innerText;
-    button.innerText = 'Running...';
-    button.disabled = true;    
+    button.innerText = 'Loading...';
+    button.disabled = true;
 
-    let fileInput = document.getElementById('file-input');
-    if (fileInput.files.length === 0) {
-        alert("Please select a file first!");
-        return;
-    }
-
-    let formData = new FormData();
-    formData.append("file", fileInput.files[0]);
-
-    $.ajax({
-        url: "/upload",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            let graph_json = JSON.parse(response);
-            Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-        },
-        error: function() {
-            alert("Error uploading file. Please try again.");
+    try {
+        let fileInput = document.getElementById('file-input');
+        if (fileInput.files.length === 0) {
+            alert("Please select a file first!");
+            return;
         }
-    });
+
+        let formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const graph_json = await response.json();
+        Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while uploading the file.');
+    } finally {
+        // Reset button state
+        button.innerText = originalText;
+        button.disabled = false;
+    }
 }
 
 

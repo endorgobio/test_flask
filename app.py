@@ -19,30 +19,35 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 opt_solution = {}
+controls_default = {}
 
 json_path = "data/data.json"
 url_coord = 'https://docs.google.com/uc?export=download&id=1VYEnH735Tdgqe9cS4ccYV0OUxMqQpsQh'
 url_dist = 'https://docs.google.com/uc?export=download&id=1Apbc_r3CWyWSVmxqWqbpaYEacbyf1wvV'
 url_demand = 'https://docs.google.com/uc?export=download&id=1w0PMK36H4Aq39SAaJ8eXRU2vzHMjlWGe'
 parameters = read_data(json_path, url_coord, url_dist, url_demand)
-controls_default = {
-    'container_value': 1240,
-    'container_min': 1,
-    'container_max': 10000,
-    'deposit_value': 70,
-    'deposit_min': 0,
-    'deposit_max': 1250,
-    'clasification_value': 140,
-    'clasification_min': 0,
-    'clasification_max': 1250,
-    'washing_value': 210,
-    'washing_min': 0,
-    'washing_max': 1250,
-    'transportation_value': 1,
-    'transportation_min': 0,
-    'transportation_max': 10,
-    'transportation_step': 0.1
-}
+
+
+def get_controls_default(parameters):
+    controls_default = {
+        'container_value': parameters['enr'],
+        'container_min': 0,
+        'container_max': 10*parameters['enr'],
+        'deposit_value': parameters['dep'],
+        'deposit_min': 0,
+        'deposit_max': 10*parameters['dep'],
+        'clasification_value': parameters['qc'],
+        'clasification_min': 0,
+        'clasification_max': 10*parameters['qc'],
+        'washing_value': parameters['ql'],
+        'washing_min': 0,
+        'washing_max': 10*parameters['ql'],
+        'transportation_value': parameters['qa'],
+        'transportation_min': 0,
+        'transportation_max': 10*parameters['qa'],
+        'transportation_step': 0.1
+    }
+    return controls_default
 
 
 @app.route('/upload', methods=['POST'])
@@ -94,6 +99,7 @@ def update_graph():
 
 @app.route('/')
 def index():
+    controls_default = get_controls_default(parameters)
     fig = create_map(parameters['df_coord'])
     graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return render_template('index.html', graph_json=graph_json, controls_default=controls_default)
