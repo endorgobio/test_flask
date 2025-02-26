@@ -31,9 +31,10 @@ async function runSampleModel() {
 
         const data = await response.json();
 
-        // Display result
-        alert("Result: " + data.layout);
-        Plotly.newPlot('graph', data.data, data.layout);
+        // // Display result
+        // alert("Result: " + data.layout);
+        // Plotly.newPlot('graph', data.data, data.layout);
+        updateGraph();
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred while running the model.');
@@ -45,15 +46,16 @@ async function runSampleModel() {
 }
 
 
-function updateGraph(dataset) {
+function updateGraph() {
     $.ajax({
         url: "/update_graph",
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify({ dataset: dataset }),
+        // data: JSON.stringify({ dataset: dataset }),
         success: function(response) {
             let graph_json = JSON.parse(response);
             Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+            
         }
     });
 }

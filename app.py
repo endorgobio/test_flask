@@ -18,11 +18,7 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-data = {
-    'Dataset 1': {'x': [1, 2, 3, 4, 5], 'y': [10, 15, 7, 12, 17]},
-    'Dataset 2': {'x': [1, 2, 3, 4, 5], 'y': [5, 10, 15, 10, 5]},
-    'Dataset 3': {'x': [1, 2, 3, 4, 5], 'y': [3, 6, 9, 12, 15]}
-}
+var_sol = {}
 
 json_path = "data/data.json"
 url_coord = 'https://docs.google.com/uc?export=download&id=1VYEnH735Tdgqe9cS4ccYV0OUxMqQpsQh'
@@ -55,12 +51,7 @@ parameters = read_data(json_path, url_coord, url_dist, url_demand)
 
 
 
-@app.route('/update_graph', methods=['POST'])
-def update_graph():
-    dataset_name = request.json.get('dataset')
-    fig = create_map(parameters['df_coord'])
-    graph_json = fig.to_json(fig)
-    return jsonify(graph_json)
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -131,6 +122,8 @@ def run_model():
 
 @app.route('/run_sample_model', methods=['POST'])
 def run_sample_model():
+    global var_sol
+
     inputs = request.get_json()
     parameters['enr'] = inputs['container_value']
     parameters['dep'] = inputs['deposit']
@@ -142,15 +135,26 @@ def run_sample_model():
     model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
     model.optimize()
     var_sol = get_vars_sol(model)
+    # df_coord = create_df_coord(var_sol, parameters['df_coord'])
+    # # Convert dataframe to JSON
+    # df_coord_json = df_coord.to_json(orient='records')
+    # fig = create_map(df_coord)
+    # graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    # result = model.ObjVal #sample_model(inputs)
+    # # return jsonify({'result': result})
+
+    # # Return data and layout separately
+    # return graph_json
+
+    return jsonify({'result': True})
+
+@app.route('/update_graph', methods=['POST'])
+def update_graph():
+    global var_sol
+
     df_coord = create_df_coord(var_sol, parameters['df_coord'])
-    # Convert dataframe to JSON
-    df_coord_json = df_coord.to_json(orient='records')
     fig = create_map(df_coord)
     graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    result = model.ObjVal #sample_model(inputs)
-    # return jsonify({'result': result})
-
-    # Return data and layout separately
     return graph_json
 
 @app.route('/')
