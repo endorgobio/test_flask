@@ -106,8 +106,33 @@ async function uploadFile() {
             throw new Error('Network response was not ok');
         }
 
-        const graph_json = await response.json();
+        // const graph_json = await response.json();
+        const data = await response.json();
+        alert(typeof data);
+        console.log(data);
+        alert(JSON.stringify(data, null, 2));
+        const graph_json = data.graph_json;
+        const controls_default = data.controls_default;
+        console.log(typeof controls_default);
+
         Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+
+        // Update control column default values
+        document.getElementById('container_value').value = controls_default['container_value'];
+        document.getElementById('container_value').min = controls_default['container_value_min'];
+        document.getElementById('container_value').max = controls_default['container_value_max'];
+        document.getElementById('deposit').value = controls_default.deposit_value;
+        document.getElementById('deposit').min = controls_default.deposit_min;  
+        document.getElementById('deposit').max = controls_default.deposit_max;
+        document.getElementById('clasification').value = controls_default.clasification_value;
+        document.getElementById('clasification').min = controls_default.clasification_min;
+        document.getElementById('clasification').max = controls_default.clasification_max;
+        document.getElementById('washing').value = controls_default.washing_value;
+        document.getElementById('washing').min = controls_default.washing_min;
+        document.getElementById('washing').max = controls_default.washing_max;
+        document.getElementById('transportation').value = controls_default.transportation_value;
+        document.getElementById('transportation').min = controls_default.transportation_min;
+        document.getElementById('transportation').max = controls_default.transportation_max;
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred while uploading the file.');

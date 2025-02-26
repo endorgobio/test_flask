@@ -66,7 +66,10 @@ def upload_file():
         parameters = read_data(filepath, url_coord, url_dist, url_demand)
         fig = create_map(parameters['df_coord'])
         graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-        return graph_json
+        controls_default = get_controls_default(parameters)
+        controls_default_json = json.dumps(controls_default)
+        return jsonify({'graph_json': graph_json, 'controls_default': controls_default})
+        # return graph_json
     
 
 @app.route('/run_sample_model', methods=['POST'])
