@@ -73,6 +73,8 @@ controls_default = {
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    global parameters
+
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'})
     file = request.files['file']
@@ -81,10 +83,11 @@ def upload_file():
     if file:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
-        df = pd.read_json(filepath)
+        # TODO decide how to load coord and distances
+        parameters = read_data(filepath, url_coord, url_dist, url_demand)
         fig = create_map(parameters['df_coord'])
-        graph_json = fig.to_json(fig)
-        return jsonify(graph_json)
+        graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graph_json
     
 
 @app.route('/run_sample_model', methods=['POST'])
@@ -112,6 +115,8 @@ def update_graph():
     fig = create_map(df_coord)
     graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graph_json
+
+
 
 @app.route('/')
 def index():

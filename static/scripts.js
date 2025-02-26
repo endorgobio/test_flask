@@ -60,6 +60,32 @@ function updateGraph() {
     });
 }
 
+function uploadFile() {
+    let fileInput = document.getElementById('file-input');
+    if (fileInput.files.length === 0) {
+        alert("Please select a file first!");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    $.ajax({
+        url: "/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            let graph_json = JSON.parse(response);
+            Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+        },
+        error: function() {
+            alert("Error uploading file. Please try again.");
+        }
+    });
+}
+
 // TODO: Solve the response data 
 // function updateGraph() {
 //     let dataset = document.getElementById("dataset-select").value;
