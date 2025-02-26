@@ -89,7 +89,6 @@ def upload_file():
 
 @app.route('/run_sample_model', methods=['POST'])
 def run_sample_model():
-    global var_sol
 
     inputs = request.get_json()
     parameters['enr'] = inputs['container_value']
@@ -102,16 +101,6 @@ def run_sample_model():
     model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
     model.optimize()
     opt_solution['variables'] = get_vars_sol(model)
-    # df_coord = create_df_coord(var_sol, parameters['df_coord'])
-    # # Convert dataframe to JSON
-    # df_coord_json = df_coord.to_json(orient='records')
-    # fig = create_map(df_coord)
-    # graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    # result = model.ObjVal #sample_model(inputs)
-    # # return jsonify({'result': result})
-
-    # # Return data and layout separately
-    # return graph_json
 
     return jsonify({'result': True})
 
