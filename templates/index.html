@@ -23,41 +23,46 @@
                     <h3 class="mt-3"> Upload your data</h3>
                     <p>Upload a JSON file to visualize the data</p>
                     <input type="file" id="file-input" class="form-control" />
-                    <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
+                    </div>
+                    
 
                     <h3> Simulate a scenario</h3>
                     <p>If not data is uploaded, it will use our predefined instance</p>
-                    <div class="mb-3 row ms-3">
+                    <div class="mb-3 row d-flex justify-content-end">
                         <label for="container_value" class="col-sm-6 col-form-label text-start">New container:</label>
                         <div class="col-sm-4">
                             <input id="container_value" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['container_value'] }}" min="{{ controls_default['container_min'] }}" max="{{ controls_default['container_max'] }}">
                         </div>
                     </div>
-                    <div class="mb-3 row ms-3">
+                    <div class="mb-3 row d-flex justify-content-end">
                         <label for="deposit" class="col-sm-6 col-form-label text-start">Deposit:</label>
                         <div class="col-sm-4">
                             <input id="deposit" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['deposit_value'] }}" min="{{ controls_default['deposit_min'] }}" max="{{ controls_default['deposit_max'] }}">
                         </div>
                     </div>
-                    <div class="mb-3 row ms-3">
+                    <div class="mb-3 row d-flex justify-content-end">
                         <label for="clasification" class="col-sm-6 col-form-label text-start">Clasification:</label>
                         <div class="col-sm-4">
                             <input id="clasification" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['clasification_value'] }}" min="{{ controls_default['clasification_min'] }}" max="{{ controls_default['clasification_max'] }}">
                         </div>
                     </div>
-                    <div class="mb-3 row ms-3">
+                    <div class="mb-3 row d-flex justify-content-end">
                         <label for="washing" class="col-sm-6 col-form-label text-start">Washing:</label>
                         <div class="col-sm-4">
                             <input id="washing" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['washing_value'] }}" min="{{ controls_default['washing_min'] }}" max="{{ controls_default['washing_max'] }}">
                         </div>
                     </div>
-                    <div class="mb-3 row ms-3">
+                    <div class="mb-3 row d-flex justify-content-end">
                         <label for="transportation" class="col-sm-6 col-form-label text-start">Transportation:</label>
                         <div class="col-sm-4">
                             <input id="transportation" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['transportation_value'] }}" min="{{ controls_default['transportation_min'] }}" max="{{ controls_default['transportation_max'] }}" step="{{ controls_default['transportation_step'] }}">
                         </div>
                     </div>
-                    <button class="btn btn-success mt-2" onclick="runSampleModel()">Run Model</button>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-success mt-2" onclick="runSampleModel()">Run Model</button>
+                    </div>
 
 
 
