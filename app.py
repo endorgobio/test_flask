@@ -18,7 +18,7 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-var_sol = {}
+opt_solution = {}
 
 json_path = "data/data.json"
 url_coord = 'https://docs.google.com/uc?export=download&id=1VYEnH735Tdgqe9cS4ccYV0OUxMqQpsQh'
@@ -101,7 +101,7 @@ def run_sample_model():
     model = create_model(instance)
     model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
     model.optimize()
-    var_sol = get_vars_sol(model)
+    opt_solution['variables'] = get_vars_sol(model)
     # df_coord = create_df_coord(var_sol, parameters['df_coord'])
     # # Convert dataframe to JSON
     # df_coord_json = df_coord.to_json(orient='records')
@@ -117,9 +117,9 @@ def run_sample_model():
 
 @app.route('/update_graph', methods=['POST'])
 def update_graph():
-    global var_sol
+    global opt_solution
 
-    df_coord = create_df_coord(var_sol, parameters['df_coord'])
+    df_coord = create_df_coord(opt_solution['variables'], parameters['df_coord'])
     fig = create_map(df_coord)
     graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graph_json
