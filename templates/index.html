@@ -23,31 +23,31 @@
                     <div class="mb-3 row ms-3">
                         <label for="container_value" class="col-sm-6 col-form-label text-start">New container:</label>
                         <div class="col-sm-4">
-                            <input id="container_value" type="number" class="form-control" placeholder="Enter a number" value="1250" min="1" max="10000">
+                            <input id="container_value" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['container_value'] }}" min="{{ controls_default['container_min'] }}" max="{{ controls_default['container_max'] }}">
                         </div>
                     </div>
                     <div class="mb-3 row ms-3">
                         <label for="deposit" class="col-sm-6 col-form-label text-start">Deposit:</label>
                         <div class="col-sm-4">
-                            <input id="deposit" type="number" class="form-control" placeholder="Enter a number" value="70" min="0" max="1250">
+                            <input id="deposit" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['deposit_value'] }}" min="{{ controls_default['deposit_min'] }}" max="{{ controls_default['deposit_max'] }}">
                         </div>
                     </div>
                     <div class="mb-3 row ms-3">
                         <label for="clasification" class="col-sm-6 col-form-label text-start">Clasification:</label>
                         <div class="col-sm-4">
-                            <input id="clasification" type="number" class="form-control" placeholder="Enter a number" value="140" min="0" max="1250">
+                            <input id="clasification" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['clasification_value'] }}" min="{{ controls_default['clasification_min'] }}" max="{{ controls_default['clasification_max'] }}">
                         </div>
                     </div>
                     <div class="mb-3 row ms-3">
                         <label for="washing" class="col-sm-6 col-form-label text-start">Washing:</label>
                         <div class="col-sm-4">
-                            <input id="washing" type="number" class="form-control" placeholder="Enter a number" value="210" min="0" max="1250">
+                            <input id="washing" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['washing_value'] }}" min="{{ controls_default['washing_min'] }}" max="{{ controls_default['washing_max'] }}">
                         </div>
                     </div>
                     <div class="mb-3 row ms-3">
                         <label for="transportation" class="col-sm-6 col-form-label text-start">Transportation:</label>
                         <div class="col-sm-4">
-                            <input id="transportation" type="number" class="form-control" placeholder="Enter a number" value="1" min="0" max="10" step="0.1">
+                            <input id="transportation" type="number" class="form-control" placeholder="Enter a number" value="{{ controls_default['transportation_value'] }}" min="{{ controls_default['transportation_min'] }}" max="{{ controls_default['transportation_max'] }}" step="{{ controls_default['transportation_step'] }}">
                         </div>
                     </div>
                     <button class="btn btn-success mt-2" onclick="runSampleModel()">Run Model</button>

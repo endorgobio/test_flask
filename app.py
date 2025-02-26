@@ -25,6 +25,24 @@ url_coord = 'https://docs.google.com/uc?export=download&id=1VYEnH735Tdgqe9cS4ccY
 url_dist = 'https://docs.google.com/uc?export=download&id=1Apbc_r3CWyWSVmxqWqbpaYEacbyf1wvV'
 url_demand = 'https://docs.google.com/uc?export=download&id=1w0PMK36H4Aq39SAaJ8eXRU2vzHMjlWGe'
 parameters = read_data(json_path, url_coord, url_dist, url_demand)
+controls_default = {
+    'container_value': 1240,
+    'container_min': 1,
+    'container_max': 10000,
+    'deposit_value': 70,
+    'deposit_min': 0,
+    'deposit_max': 1250,
+    'clasification_value': 140,
+    'clasification_min': 0,
+    'clasification_max': 1250,
+    'washing_value': 210,
+    'washing_min': 0,
+    'washing_max': 1250,
+    'transportation_value': 1,
+    'transportation_min': 0,
+    'transportation_max': 10,
+    'transportation_step': 0.1
+}
 # instance = create_instance(parameters)        
 # model = create_model(instance)
 # model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
@@ -68,57 +86,6 @@ def upload_file():
         graph_json = fig.to_json(fig)
         return jsonify(graph_json)
     
-@app.route('/run_model', methods=['POST'])
-def run_model():
-    try:
-        data = request.get_json()
-        file_data = data.get("file_data")  # Extract file content
-
-        
-        parsed_data = json.loads(file_data)  # Parse JSON file if needed
-        values = parsed_data["values"]
-        weights = parsed_data["weights"]
-        capacity = parsed_data["capacity"]
-        num_items = len(values)
-
-        # Create Pyomo model
-        model = ConcreteModel()
-
-        # Define sets
-        model.Items = Set(initialize = list(range(num_items)))
-        print(model.Items)
-
-        # Decision variables (Binary: 0 or 1)
-        model.x = Var(model.Items, within=Binary)
-
-        # Objective function: Maximize value
-        model.obj = Objective(expr=sum(values[i] * model.x[i] for i in model.Items), sense=maximize)
-
-        # Constraint: Total weight should not exceed capacity
-        model.weight_constraint = Constraint(expr=sum(weights[i] * model.x[i] for i in model.Items) <= capacity)
-
-        # Solve using HiGHS solver
-        solver = SolverFactory("appsi_highs")
-        result = solver.solve(model)
-
-        # Extract results
-        selected_items = [i for i in model.Items if model.x[i].value == 1]
-
-        # Return solution
-        output = {
-            "status": str(result.solver.status),
-            "selected_items": selected_items,
-            "total_value": sum(values[i] for i in selected_items),
-            "total_weight": sum(weights[i] for i in selected_items)
-        }
-        
-        result = {"output": f"Model Result: {output}"}
-        return jsonify(result)
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
 
 @app.route('/run_sample_model', methods=['POST'])
 def run_sample_model():
@@ -161,7 +128,7 @@ def update_graph():
 def index():
     fig = create_map(parameters['df_coord'])
     graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return render_template('index.html', graph_json=graph_json)
+    return render_template('index.html', graph_json=graph_json, controls_default=controls_default)
 
 if __name__ == '__main__':
     app.run(debug=True)
