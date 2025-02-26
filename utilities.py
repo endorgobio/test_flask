@@ -2,12 +2,8 @@
 import pandas as pd
 import requests
 import json 
-import pandas as pd
 import re
-import requests
-import json
 import numpy as np
-# import gurobipy as gp
 import plotly.graph_objects as go
 
 

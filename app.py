@@ -1,18 +1,15 @@
 from flask import Flask, render_template, request, jsonify
 import plotly
-import plotly.graph_objs as go
-import plotly.io as pio
-import pandas as pd
 import os
 import json
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
-from pyomo.opt import SolverStatus, TerminationCondition
 from utilities import read_data, create_instance, create_map, create_df_coord
 from opt_pyomo import create_model_pyomo, get_vars_sol_pyomo#
 from opt_gurobipy import create_model_gb, get_vars_sol_gb#, get_vars_sol, create_df_coord, get_obj_components, create_df_OF
 import gurobipy as gp
 from gurobipy import GRB
+
 
 
 app = Flask(__name__)
@@ -87,8 +84,11 @@ def run_sample_model():
     # model.setParam('MIPGap', 0.05) # Set the MIP gap tolerance to 5% (0.05)
     # model.optimize()
     # opt_solution['variables'] = get_vars_sol_gb(model)
-    solver = SolverFactory('gurobi')
-    solver.options['MIPGap'] = 0.01 
+
+    # solver = SolverFactory('gurobi')
+    # solver.options['MIPGap'] = 0.01 
+    solver = SolverFactory('appsi_highs')
+    solver.options['mip_rel_gap'] = 0.01 
     model = create_model_pyomo(instance)
     solver.solve(model, tee=True)
     opt_solution['variables'] = get_vars_sol_pyomo(model)
