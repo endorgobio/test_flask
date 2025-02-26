@@ -107,13 +107,9 @@ async function uploadFile() {
         }
 
         // const graph_json = await response.json();
-        const data = await response.json();
-        alert(typeof data);
-        console.log(data);
-        alert(JSON.stringify(data, null, 2));
-        const graph_json = data.graph_json;
+        const data = await response.json();      
+        const graph_json = JSON.parse(data.graph_json);        
         const controls_default = data.controls_default;
-        console.log(typeof controls_default);
 
         Plotly.newPlot('graph', graph_json.data, graph_json.layout);
 
