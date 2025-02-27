@@ -1,8 +1,12 @@
+// Event listener for DOMContentLoaded to render the initial Plotly graph
 document.addEventListener('DOMContentLoaded', function () {
-    // Render the Plotly graph
+    // Render the Plotly graph with initial data
     Plotly.newPlot('graph', graph_json.data, graph_json.layout);
 });
 
+/**
+ * Run the sample model and update the graph.
+ */
 async function runSampleModel() {
     // Show loading indicator (optional)
     const button = document.querySelector('.btn-success');
@@ -31,9 +35,7 @@ async function runSampleModel() {
 
         const data = await response.json();
 
-        // // Display result
-        // alert("Result: " + data.layout);
-        // Plotly.newPlot('graph', data.data, data.layout);
+        // Update the Plotly graph
         updateGraph();
     } catch (error) {
         console.error('Error:', error);
@@ -45,20 +47,9 @@ async function runSampleModel() {
     }
 }
 
-
-// function updateGraph() {
-//     $.ajax({
-//         url: "/update_graph",
-//         type: "POST",
-//         contentType: "application/json",
-//         success: function(response) {
-//             let graph_json = JSON.parse(response);
-//             Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-            
-//         }
-//     });
-// }
-
+/**
+ * Update the Plotly graph with new data from the server.
+ */
 async function updateGraph() {
     try {
         const response = await fetch('/update_graph', {
@@ -80,6 +71,9 @@ async function updateGraph() {
     }
 }
 
+/**
+ * Upload a file and update the graph and control values based on the uploaded data.
+ */
 async function uploadFile() {
     // Show loading indicator (optional)
     const button = document.getElementById('btn_load');
@@ -106,7 +100,6 @@ async function uploadFile() {
             throw new Error('Network response was not ok');
         }
 
-        // const graph_json = await response.json();
         const data = await response.json();      
         const graph_json = JSON.parse(data.graph_json);        
         const controls_default = data.controls_default;
@@ -138,7 +131,6 @@ async function uploadFile() {
         button.disabled = false;
     }
 }
-
 
 
 
