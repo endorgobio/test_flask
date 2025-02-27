@@ -24,11 +24,19 @@ select {
     outline: none;
 }
 
-#graph {
-    width: 80%;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+
+/* Custom CSS for distinct columns */
+.controls-column {
+    background-color: #f8f9fa; /* Light gray background */
+    border: 1px solid #dee2e6; /* Light border */
     border-radius: 8px;
+    padding: 10px;
+}
+
+.graph-column {
+    background-color: #ffffff; /* White background */
+    border: 1px solid #ced4da; /* Slightly darker border */
+    border-radius: 8px;
+    padding: 10px;
 }

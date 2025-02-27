@@ -1,169 +1,144 @@
-function updateGraph() {
-    let dataset = $("#dataset-select").val();
-    $.ajax({
-        url: "/update_graph",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({ dataset: dataset }),
-        success: function(response) {
-            let graph_json = JSON.parse(response);
-            Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-        }
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    // Render the Plotly graph
+    Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+});
+
+async function runSampleModel() {
+    // Show loading indicator (optional)
+    const button = document.querySelector('.btn-success');
+    const originalText = button.innerText;
+    button.innerText = 'Running...';
+    button.disabled = true;
+
+    try {
+        // Gather input values
+        const parameters = {
+            container_value: parseFloat(document.getElementById('container_value').value),
+            deposit: parseFloat(document.getElementById('deposit').value),
+            clasification: parseFloat(document.getElementById('clasification').value),
+            washing: parseFloat(document.getElementById('washing').value),
+            transportation: parseFloat(document.getElementById('transportation').value)
+        };
+
+        // Send POST request to Flask backend
+        const response = await fetch('/run_sample_model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parameters)
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const data = await response.json();
+
+        // // Display result
+        // alert("Result: " + data.layout);
+        // Plotly.newPlot('graph', data.data, data.layout);
+        updateGraph();
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while running the model.');
+    } finally {
+        // Reset button state
+        button.innerText = originalText;
+        button.disabled = false;
+    }
 }
 
-// TODO: Solve the response data 
+
 // function updateGraph() {
-//     let dataset = document.getElementById("dataset-select").value;
-
-//     fetch("/update_graph", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify({ dataset: dataset })
-//     })
-//     .then(response => response.json()) // Parse the JSON response
-//     .then(graph_json => {
-        
-//         console.log("Graph JSON Response:", graph_json);
-//         // Check if the response contains valid data
-//         if (graph_json && graph_json.data && Array.isArray(graph_json.data) && graph_json.data.length > 0) {
-//             console.log("Graph Data:", graph_json.data);
-//             console.log("Graph Layout:", graph_json.layout);
-
-//             // Ensure the container is cleared before creating the plot
-//             const graphContainer = document.getElementById('graph');
-//             graphContainer.innerHTML = ''; // Clear the container before plotting
-
-//             // Create the plot with the correct data and layout
+//     $.ajax({
+//         url: "/update_graph",
+//         type: "POST",
+//         contentType: "application/json",
+//         success: function(response) {
+//             let graph_json = JSON.parse(response);
 //             Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-//         } else {
-//             console.error("Invalid graph data or layout:", graph_json);
+            
 //         }
-//     })
-//     .catch(error => {
-//         console.error("Error updating graph:", error);
 //     });
 // }
 
-
-function uploadFile() {
-    let fileInput = document.getElementById('file-input');
-    if (fileInput.files.length === 0) {
-        alert("Please select a file first!");
-        return;
-    }
-
-    let formData = new FormData();
-    formData.append("file", fileInput.files[0]);
-
-    $.ajax({
-        url: "/upload",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            let graph_json = JSON.parse(response);
-            Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-        },
-        error: function() {
-            alert("Error uploading file. Please try again.");
-        }
-    });
-}
-
-// TODO: Solve the response data 
-// async function uploadFile() {
-//     let fileInput = document.getElementById('file-input');
-//     if (fileInput.files.length === 0) {
-//         alert("Please select a file first!");
-//         return;
-//     }
-
-//     let formData = new FormData();
-//     formData.append("file", fileInput.files[0]);
-
-//     try {
-//         let response = await fetch("/upload", {
-//             method: "POST",
-//             body: formData
-//         });
-
-//         if (!response.ok) {
-//             throw new Error("Error uploading file. Please try again.");
-//         }
-
-//         // let graph_json = await response.json();
-//         let graph_json = await  JSON.parse(response)
-
-//         Plotly.newPlot('graph', graph_json.data, graph_json.layout);
-//     } catch (error) {
-//         alert(error.message);
-//     }
-// }
-
-
-// async function runModelAndDisplay() {
-//     try {
-//         let response = await fetch('/run_model', {  // Flask route
-//             method: 'GET',
-//             headers: { 'Content-Type': 'application/json' }
-//         });
-
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-
-//         let result = await response.json();  // Expecting JSON response
-//         document.getElementById("model-output").value = result.output; // Access the 'output' key
-//     } catch (error) {
-//         console.error("Error running model:", error);
-//         alert("Error running model. Please try again.");
-//     }
-// }
-
-async function runModelWithFile() {
-    let fileInput = document.getElementById('file-data');
-    
-    if (fileInput.files.length === 0) {
-        alert("Please select a file first!");
-        return;
-    }
-
-    let file = fileInput.files[0];
-    let reader = new FileReader();
-
-    reader.onload = async function(event) {
-        let fileContent = event.target.result;  // Read file content
-
-        try {
-            let response = await fetch('/run_model', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ file_data: fileContent })  // Send file data
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+async function updateGraph() {
+    try {
+        const response = await fetch('/update_graph', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
             }
+        });
 
-            let result = await response.json();
-            document.getElementById("model-output").value = result.output;
-        } catch (error) {
-            console.error("Error running model:", error);
-            alert("Error running model. Please try again.");
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    };
 
-    reader.readAsText(file);  // Read file as text (works for JSON and CSV)
+        const graph_json = await response.json();
+        Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while updating the graph.');
+    }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const datasetSelect = document.getElementById('dataset-select');
-    datasetSelect.addEventListener('change', updateGraph);
+async function uploadFile() {
+    // Show loading indicator (optional)
+    const button = document.getElementById('btn_load');
+    const originalText = button.innerText;
+    button.innerText = 'Loading...';
+    button.disabled = true;
 
-    // Load the initial graph
-    updateGraph();
-});
+    try {
+        let fileInput = document.getElementById('file-input');
+        if (fileInput.files.length === 0) {
+            alert("Please select a file first!");
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // const graph_json = await response.json();
+        const data = await response.json();      
+        const graph_json = JSON.parse(data.graph_json);        
+        const controls_default = data.controls_default;
+
+        Plotly.newPlot('graph', graph_json.data, graph_json.layout);
+
+        // Update control column default values
+        document.getElementById('container_value').value = controls_default['container_value'];
+        document.getElementById('container_value').min = controls_default['container_value_min'];
+        document.getElementById('container_value').max = controls_default['container_value_max'];
+        document.getElementById('deposit').value = controls_default.deposit_value;
+        document.getElementById('deposit').min = controls_default.deposit_min;  
+        document.getElementById('deposit').max = controls_default.deposit_max;
+        document.getElementById('clasification').value = controls_default.clasification_value;
+        document.getElementById('clasification').min = controls_default.clasification_min;
+        document.getElementById('clasification').max = controls_default.clasification_max;
+        document.getElementById('washing').value = controls_default.washing_value;
+        document.getElementById('washing').min = controls_default.washing_min;
+        document.getElementById('washing').max = controls_default.washing_max;
+        document.getElementById('transportation').value = controls_default.transportation_value;
+        document.getElementById('transportation').min = controls_default.transportation_min;
+        document.getElementById('transportation').max = controls_default.transportation_max;
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while uploading the file.');
+    } finally {
+        // Reset button state
+        button.innerText = originalText;
+        button.disabled = false;
+    }
+}
+
+
+
+

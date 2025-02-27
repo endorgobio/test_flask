@@ -1,0 +1,48 @@
+{
+    "n_acopios": 5,
+    "n_centros": 5,
+    "n_plantas": 3,
+    "n_productores": 5,
+    "n_envases": 3,
+    "n_periodos": 10,
+    
+    "ccv": 337610,
+    "acv": 418117,
+    "lpl": 168805,
+    "apl": 623280,
+    "ta": 0.95,
+    "tl": 0.9,
+  
+    "arr_cv": 5100000,
+    "arr_pl": 7000000,
+    "ade_cv": 20000000,
+    "ade_pl": 45000000,
+    "qc": 140,
+    "qt": 0.81,
+    "ql": 210,
+    "qb": 140,
+    "qa": 1,
+    "cinv": 12.2,
+    "pinv": 11.2,
+  
+    "em": 0.0008736,
+    "el": 0.002597,
+    "et": 0.001096,
+    "en": 820.65,
+  
+    "wa": 0.01,
+    "inflation": 0.05,
+    "recup_increm": 0.05,
+    "enr": 13,
+    "tri": 2,
+    "adem": 0.02,
+    "recup": 0.8,
+    "envn": 1100,
+    "dep": 7,
+    "n_pack_prod": 2,
+    "dem_interval": [30000, 30001],
+  
+    "type_distance": "distance_geo",
+    "initial_demand": null
+  }
+  
