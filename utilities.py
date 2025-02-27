@@ -641,16 +641,6 @@ def graph_costs(df):
     ))
 
 
-
-    # Add a vertical line at 100%
-    # fig.add_shape(
-    #     type="line",
-    #     x0=100, x1=100,
-    #     y0=-0.5, y1=len(categories) + len(categories2) - 0.5,  # Extend the line across the bar chart
-    #     line=dict(color="grey", width=2),
-    #     name='Threshold'
-    # )
-
     # Add custom legend entries
     fig.add_trace(go.Scatter(
         x=[None], y=[None],
